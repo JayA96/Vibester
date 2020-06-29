@@ -32,8 +32,8 @@ def callback():
     # Get user tracks data
     global tracks
     tracks = get_saved_tracks(api_url, auth_header)
-
-    # Get genre and release decade for each track
+    return render_template("test.html", tracks=tracks)
+    """# Get genre and release decade for each track
     for i in range(len(tracks)):
         artist_id = tracks[i]["artist_id"]
         artist_api_endpoint = f"{api_url}/artists/{artist_id}"
@@ -79,7 +79,7 @@ def custom():
     else:
         playlist_id = sort_by_audio_features(tracks, custom_data, api_url, auth_header)
     return render_template("playlists.html", playlist_type="custom", id=playlist_id)
-
+"""
 
 if __name__ == "__main__":
     app.run(port=port)
