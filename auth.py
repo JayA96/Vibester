@@ -18,7 +18,7 @@ api_url = f"{base_url}/{api_version}"
 
 # Server Parameters
 client_url = "https://vibester.herokuapp.com/"
-
+port = 8080
 redirect_uri = f"{client_url}/callback/q"
 scope = "user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative"
 
