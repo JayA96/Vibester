@@ -51,10 +51,10 @@ def callback():
 
         # Get audio features for all tracks
         get_audio_features(tracks, api_url, auth_header)
-    return render_template("test.html", tracks=tracks)
+    return redirect("/home")
 
 
-"""@app.route("/home")
+@app.route("/home")
 def home():
     return render_template("home.html")
 
@@ -85,7 +85,7 @@ def custom():
     else:
         playlist_id = sort_by_audio_features(tracks, custom_data, api_url, auth_header)
     return render_template("playlists.html", playlist_type="custom", id=playlist_id)
-"""
+
 
 if __name__ == "__main__":
     app.run(port=port)
