@@ -32,7 +32,7 @@ def callback():
     # Get user tracks data
     global tracks
     tracks = get_saved_tracks(api_url, auth_header)
-
+    count = 0
     # Get genre and release decade for each track
     for i in range(len(tracks)):
         artist_id = tracks[i]["artist_id"]
@@ -41,8 +41,10 @@ def callback():
         artist_data = json.loads(artist_response.text)
         genres = artist_data["genres"]
         print(genres)
+        print(count)
         tracks[i]["decade"] = get_decade(tracks[i])
         tracks[i]["genre"] = get_main_genre(genres)
+        count += 1
 
         # Get audio features for all tracks
         get_audio_features(tracks, api_url, auth_header)
