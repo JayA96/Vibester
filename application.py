@@ -62,8 +62,8 @@ def home():
 @app.route("/genre")
 def genre():
     # Sort songs into genre playlists
+    print(tracks)
     playlist_ids = sort_by_genre(tracks, api_url, auth_header)
-    print(playlist_ids)
     return render_template("playlists.html", playlist_type="genre", ids=playlist_ids)
 
 
