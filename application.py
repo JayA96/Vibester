@@ -32,26 +32,29 @@ def callback():
     # Get user tracks data
     global tracks
     tracks = get_saved_tracks(api_url, auth_header)
-    count = 0
+
     # Get genre and release decade for each track
-    for i in range(len(tracks)):
-        artist_id = tracks[i]["artist_id"]
-        artist_api_endpoint = f"{api_url}/artists/{artist_id}"
+    tracks_remainder = len(tracks) % 50
+    for offset in range(0, len(tracks), 50):
+        if len(tracks) < offset + 50:
+            artist_ids = [tracks[i+offset]["artist_id"] for i in range(tracks_remainder)]
+        else:
+            artist_ids = [tracks[i+offset]["artist_id"] for i in range(50)]
+        artist_ids = ",".join(artist_ids)
+        artist_api_endpoint = f"{api_url}/artists?ids={artist_ids}"
         artist_response = requests.get(artist_api_endpoint, headers=auth_header)
         artist_data = json.loads(artist_response.text)
-        genres = artist_data["genres"]
-        print(genres)
-        print(count)
-        tracks[i]["decade"] = get_decade(tracks[i])
-        tracks[i]["genre"] = get_main_genre(genres)
-        count += 1
+        artists = artist_data["artists"]
+        for i in range(len(artists)):
+            tracks[i+offset]["genre"] = get_main_genre(artists[i]["genres"])
+            tracks[i+offset]["decade"] = get_decade(tracks[i+offset])
 
         # Get audio features for all tracks
         get_audio_features(tracks, api_url, auth_header)
-    return redirect("/home")
+    return render_template("test.html", tracks=tracks)
 
 
-@app.route("/home")
+"""@app.route("/home")
 def home():
     return render_template("home.html")
 
@@ -82,7 +85,7 @@ def custom():
     else:
         playlist_id = sort_by_audio_features(tracks, custom_data, api_url, auth_header)
     return render_template("playlists.html", playlist_type="custom", id=playlist_id)
-
+"""
 
 if __name__ == "__main__":
     app.run(port=port)
