@@ -39,7 +39,7 @@ def callback():
     artist_api_endpoint = f"{api_url}/artists/{artist_id}"
     artist_response = requests.get(artist_api_endpoint, headers=auth_header)
     artist_data = json.loads(artist_response.text)
-    render_template("test.html", tracks=artist_data)
+    return render_template("test.html", tracks=artist_data)
     """genres = artist_data["genres"]
     tracks[i]["decade"] = get_decade(tracks[i])
     tracks[i]["genre"] = get_main_genre(genres)
