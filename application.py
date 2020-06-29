@@ -40,6 +40,7 @@ def callback():
         artist_response = requests.get(artist_api_endpoint, headers=auth_header)
         artist_data = json.loads(artist_response.text)
         genres = artist_data["genres"]
+        print(genres)
         tracks[i]["decade"] = get_decade(tracks[i])
         tracks[i]["genre"] = get_main_genre(genres)
 
