@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}Done!{% endblock %}
+
+{% block body %}
+<header>
+    <div class="container_fluid p-0 text-center text-sm-left">
+        <a href="/home" class="navbar-brand mb-0 pl-10">
+            <img src="/static/cover.png" alt="Home">
+        </a>
+    </div>
+</header>
+<main>
+    <div class="homepage">
+        <div class="homepage-heading">
+            <h1>All Done!</h1>
+            <h3>We've finished sorting your music for you. Your new playlists should be in your Spotify library now,
+                so go and
+                check them out, or alternatively have a look at them below. Feel free to change
+                the names, add or remove songs, or if you're not happy with any of your playlists, you can always
+                delete them.</h3>
+        </div>
+        <hr>
+        <div class="playlists">
+            {% if playlist_type == "custom" %}
+                <iframe src="https://open.spotify.com/embed/playlist/{{id}}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            {% else %}
+                {% for id in ids %}
+                    <iframe src="https://open.spotify.com/embed/playlist/{{id}}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}

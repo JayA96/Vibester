@@ -1,0 +1,139 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<header>
+    <div class="container_fluid p-0 text-center text-sm-left">
+        <a href="/home" class="navbar-brand mb-0 pl-10">
+            <img src="../static/cover.png" alt="Home">
+        </a>
+    </div>
+</header>
+<main>
+    <div class="homepage">
+        <div class="homepage-heading">
+            <h1>Time to get started</h1>
+            <h3>
+                Now it's time to sort your music. Click one of the buttons below to start generating
+                playlists from your saved music.
+            </h3>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4" style="padding-bottom: 10px;">
+                    <div class=" card card-body genre">
+                        <h5>Sort by Genre</h5>
+                        <p class="genre-text">Sorts your saved music into playlists based on the
+                            artist's
+                            main
+                            genre.</p>
+                        <p style="font-size: 13px;">Please note, any playlists with the following names will be
+                            replaced: 'Rock', 'Pop',
+                            'Country', 'Metal', 'Hip-hop',
+                            'Funk and Soul', 'Blues', 'Folk Music', 'Electronic', 'Jazz', 'Lounge Music', 'R&B',
+                            'Classical', 'Musicals and Film Music',
+                            'Reggae'.</p>
+                        <hr>
+                        <a href="/genre"><button type="button" class="btn btn-primary">Make my
+                                Playlists</button></a>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding-bottom: 10px;">
+                    <div class="card card-body decade">
+                        <h5>Sort by Decade</h5>
+                        <p class="decade-text">Sorts your saved music into playlists depending on which
+                            decade the
+                            song was released (Based on album release date for non-singles).</p>
+                        <p style="font-size: 13px;">Please note, any playlists with the following names will be
+                            replaced: '2020s', '2010s', '2000s', '90s', '80s', '70s', '60s', '50s', '40s', '30s',
+                            'Pre 1930'.
+                        </p>
+                        <hr>
+                        <a href="/decade"><button type="button" class="btn btn-primary">Make my
+                                Playlists</button></a>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding-bottom: 10px;">
+                    <div class="card card-body mood">
+                        <h5>Custom Mood Playlist</h5>
+                        <p>Play with the sliders below to make a custom playlist from
+                            your saved songs.</p>
+                        Energy
+                        <div id="energy_slider"></div>
+                        <script>
+                            var energy_slider = document.getElementById('energy_slider');
+                            noUiSlider.create(energy_slider, {
+                                start: [0, 100],
+                                connect: true,
+                                range: {
+                                    'min': 0,
+                                    'max': 100
+                                }
+                            });
+                        </script>
+                        Danceability
+                        <div id="dance_slider"></div>
+                        <script>
+                            var dance_slider = document.getElementById('dance_slider');
+                            noUiSlider.create(dance_slider, {
+                                start: [0, 100],
+                                connect: true,
+                                range: {
+                                    'min': 0,
+                                    'max': 100
+                                }
+                            });
+                        </script>
+                        Happiness
+                        <div id="valence_slider"></div>
+                        <script>
+                            var valence_slider = document.getElementById('valence_slider');
+                            noUiSlider.create(valence_slider, {
+                                start: [0, 100],
+                                connect: true,
+                                range: {
+                                    'min': 0,
+                                    'max': 100
+                                }
+                            });
+                        </script>
+                        <input autocomplete="on" class="form-control" name="name" id="playlist_name"
+                            placeholder="Your Playlist Name" type="text">
+                        <button type="button" class="btn btn-info" id="assign-button">Assign Values</button>
+
+                        <hr>
+                        <a href="/custom"><button type="button" class="btn btn-primary" id="custom-button"
+                                disabled="disabled">Make my
+                                Playlist</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('assign-button').addEventListener('click', function () {
+        var energy = energy_slider.noUiSlider.get();
+        var danceability = dance_slider.noUiSlider.get();
+        var valence = energy_slider.noUiSlider.get();
+        var name = document.getElementById('playlist_name').value;
+        var values = {
+            "energy": energy,
+            "danceability": danceability,
+            "valence": valence,
+            "name": name
+        }
+        document.getElementById('custom-button').removeAttribute('disabled');
+        $.ajax({
+            url: "/custom",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(values)
+        });
+    });
+</script>
+{% endblock %}

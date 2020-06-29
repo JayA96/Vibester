@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@700&display=swap');
+
+body {
+  text-align: center;
+  background-color: rgb(255, 233, 230);
+  font-family: 'Source Sans Pro', sans-serif;
+  color: rgb(58, 28, 24);
+}
+
+.navbar-brand {
+  height: 50px;
+  font-size: 40px !important;
+  padding: 20px;
+}
+
+.homepage {
+  padding-bottom: 50px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.loading {
+  padding-bottom: 200px;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 100px;
+  display: none;
+}
+
+.index-heading {
+  padding-top: 150px;
+  padding-bottom: 20px;
+}
+
+.homepage-heading {
+  padding-top: 100px;
+  padding-bottom: 20px;
+}
+
+.form-control {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.genre-text {
+  padding-bottom: 110px;
+}
+
+.decade-text {
+  padding-bottom: 101px;
+}
+
+h1 {
+  font-size: 80px;
+  font-family: 'Bebas Neue', cursive;
+}
+
+h5 {
+  font-size: 30px;
+  font-family: 'Bebas Neue', cursive;
+}
+
+footer {
+  font-family: 'Bebas Neue', cursive;
+}
+
+.login:hover {
+  filter: brightness(120%);
+}
+
+@media only screen and (max-width: 500px) {
+
+  .homepage-heading,
+  .index-heading {
+    padding-top: 20px;
+  }
+}
+
+@media all and (max-width:800px) {
+
+  .genre,
+  .decade,
+  .mood {
+    display: block;
+    float: none;
+    width: 100%;
+  }
+
+  .genre-text,
+  .decade-text {
+    padding-bottom: 20px;
+  }
+}

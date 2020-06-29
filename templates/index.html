@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}Vibester{% endblock %}
+
+{% block body %}
+<script>
+    function load() {
+        var loading = document.getElementById("loading");
+        var homepage = document.getElementById("homepage");
+        homepage.style.display = "none";
+        loading.style.display = "block";
+        }
+</script>
+<main>
+    <div class="homepage" id="homepage">
+        <div class="index-heading">
+            <h1>Welcome to Vibester</h1>
+            <h3>
+                Here you can organize your saved music into playlists in the click of the button. Sort your
+                music by genre or decade, or generate a custom playlist to suit your mood. Click the button
+                below to get started!
+            </h3>
+        </div>
+        <div>
+            <a href="/authorize" onclick="load()"><img class="login" src="../static/login.png"></a>
+        </div>
+    </div>
+    <div class="loading" id="loading">
+        <img src="../static/loading.gif">
+        <h3>We're just getting the data for your tracks. This might take a minute.</h3>
+    </div>
+</main>
+{% endblock %}
+

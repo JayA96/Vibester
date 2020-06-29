@@ -1,0 +1,14 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: Montserrat-ExtraBold
+font link: https://fonts.google.com/specimen/Montserrat
+font author: Julieta Ulanovsky
+font author site: http://www.zkysky.com.ar/
+
+
+icon designer: Stephen JB Thomas
+icon designer link: /niftyacres
+        
+{"bg":"#FFE9E6","icon-gradient-0":"#FF5A20","icon-gradient-1":"#FFACC7","font":"#3A1C18","slogan":"#4e302c"}
+      
