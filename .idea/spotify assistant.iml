@@ -4,7 +4,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/spotify_assistant_env" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.8 (spotify_assistant_env)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (Vibester)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
