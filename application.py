@@ -15,7 +15,6 @@ app.secret_key = os.environ.get('SPOTIFY_SECRET_KEY')
 def index():
     # Reset session data for new user
     session.pop("header", None)
-    session.pop("tracks", None)
     session.pop("custom_data", None)
     session.pop("name", None)
     return render_template("index.html")
@@ -30,6 +29,17 @@ def authorize():
 @app.route("/callback/q")
 def callback():
     session["header"] = user_auth()
+    return redirect("/home")
+
+
+@app.route("/home")
+def home():
+    return render_template("home.html")
+
+
+@app.route("/genre")
+def genre():
+    # Sort songs into genre playlists
     auth_header = session["header"]
     # Get user tracks data
     tracks = get_saved_tracks(api_url, auth_header)
@@ -52,20 +62,6 @@ def callback():
 
         # Get audio features for all tracks
         get_audio_features(tracks, api_url, auth_header)
-        session["tracks"] = tracks
-    return redirect("/home")
-
-
-@app.route("/home")
-def home():
-    return render_template("home.html")
-
-
-@app.route("/genre")
-def genre():
-    # Sort songs into genre playlists
-    tracks = session["tracks"]
-    auth_header = session["header"]
     playlist_ids = sort_by_genre(tracks, api_url, auth_header)
     return render_template("playlists.html", playlist_type="genre", ids=playlist_ids)
 
@@ -73,8 +69,28 @@ def genre():
 @app.route("/decade")
 def decade():
     # Sort songs into decade playlists
-    tracks = session["tracks"]
     auth_header = session["header"]
+    # Get user tracks data
+    tracks = get_saved_tracks(api_url, auth_header)
+
+    # Get genre and release decade for each track
+    tracks_remainder = len(tracks) % 50
+    for offset in range(0, len(tracks), 50):
+        if len(tracks) < offset + 50:
+            artist_ids = [tracks[i + offset]["artist_id"] for i in range(tracks_remainder)]
+        else:
+            artist_ids = [tracks[i + offset]["artist_id"] for i in range(50)]
+        artist_ids = ",".join(artist_ids)
+        artist_api_endpoint = f"{api_url}/artists?ids={artist_ids}"
+        artist_response = requests.get(artist_api_endpoint, headers=auth_header)
+        artist_data = json.loads(artist_response.text)
+        artists = artist_data["artists"]
+        for i in range(len(artists)):
+            tracks[i + offset]["genre"] = get_main_genre(artists[i]["genres"])
+            tracks[i + offset]["decade"] = get_decade(tracks[i + offset])
+
+        # Get audio features for all tracks
+        get_audio_features(tracks, api_url, auth_header)
     playlist_ids = sort_by_decade(tracks, api_url, auth_header)
     return render_template("playlists.html", playlist_type="decade", ids=playlist_ids)
 
@@ -88,9 +104,29 @@ def custom():
         custom_data = request.get_json()
         session["custom_data"] = custom_data
     else:
-        tracks = session["tracks"]
         custom_data = session["custom_data"]
         auth_header = session["header"]
+        # Get user tracks data
+        tracks = get_saved_tracks(api_url, auth_header)
+
+        # Get genre and release decade for each track
+        tracks_remainder = len(tracks) % 50
+        for offset in range(0, len(tracks), 50):
+            if len(tracks) < offset + 50:
+                artist_ids = [tracks[i + offset]["artist_id"] for i in range(tracks_remainder)]
+            else:
+                artist_ids = [tracks[i + offset]["artist_id"] for i in range(50)]
+            artist_ids = ",".join(artist_ids)
+            artist_api_endpoint = f"{api_url}/artists?ids={artist_ids}"
+            artist_response = requests.get(artist_api_endpoint, headers=auth_header)
+            artist_data = json.loads(artist_response.text)
+            artists = artist_data["artists"]
+            for i in range(len(artists)):
+                tracks[i + offset]["genre"] = get_main_genre(artists[i]["genres"])
+                tracks[i + offset]["decade"] = get_decade(tracks[i + offset])
+
+            # Get audio features for all tracks
+            get_audio_features(tracks, api_url, auth_header)
         playlist_id = sort_by_audio_features(tracks, custom_data, api_url, auth_header)
     return render_template("playlists.html", playlist_type="custom", id=playlist_id)
 
