@@ -44,6 +44,7 @@ def genre():
     # Get user tracks data
     tracks = get_saved_tracks(api_url, auth_header)
 
+    tracks = None
     # Check user has more than 0 and less than 4000 tracks
     if tracks is None:
         return render_template("error.html", type="no_tracks")
@@ -79,6 +80,7 @@ def decade():
     # Get user tracks data
     tracks = get_saved_tracks(api_url, auth_header)
 
+    tracks = list(range(1, 5000))
     # Check user has more than 0 and less than 4000 tracks
     if tracks is None:
         return render_template("error.html", type="no_tracks")
