@@ -11,6 +11,38 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SPOTIFY_SECRET_KEY')
 
 
+def collect_data(auth_header):
+    # Collects genre, decade, and audio features data, and adds it to tracks data structure
+
+    tracks = get_saved_tracks(api_url, auth_header)
+
+    # Check user has more than 0 and less than 4000 tracks
+    if tracks == 0:
+        return "no_tracks"
+    elif len(tracks) > 4000:
+        return "too_many_tracks"
+
+    # Get genre and release decade for each track
+    tracks_remainder = len(tracks) % 50
+    for offset in range(0, len(tracks), 50):
+        if len(tracks) < offset + 50:
+            artist_ids = [tracks[i + offset]["artist_id"] for i in range(tracks_remainder)]
+        else:
+            artist_ids = [tracks[i + offset]["artist_id"] for i in range(50)]
+        artist_ids = ",".join(artist_ids)
+        artist_api_endpoint = f"{api_url}/artists?ids={artist_ids}"
+        artist_response = requests.get(artist_api_endpoint, headers=auth_header)
+        artist_data = json.loads(artist_response.text)
+        artists = artist_data["artists"]
+        for i in range(len(artists)):
+            tracks[i + offset]["genre"] = get_main_genre(artists[i]["genres"])
+            tracks[i + offset]["decade"] = get_decade(tracks[i + offset])
+
+        # Get audio features for all tracks
+        get_audio_features(tracks, api_url, auth_header)
+    return tracks
+
+
 @app.route("/")
 def index():
     # Reset session data for new user
@@ -42,32 +74,11 @@ def genre():
     # Sort songs into genre playlists
     auth_header = session["header"]
     # Get user tracks data
-    tracks = get_saved_tracks(api_url, auth_header)
+    tracks = collect_data(auth_header)
+    # Displays error page if the user has no tracks or over 4000 tracks
+    if tracks == "no_tracks" or tracks == "too_many_tracks":
+        return render_template("error.html", type=tracks)
 
-    # Check user has more than 0 and less than 4000 tracks
-    if tracks is None:
-        return render_template("error.html", type="no_tracks")
-    elif len(tracks) > 4000:
-        return render_template("error.html", type="too_many_tracks")
-
-    # Get genre and release decade for each track
-    tracks_remainder = len(tracks) % 50
-    for offset in range(0, len(tracks), 50):
-        if len(tracks) < offset + 50:
-            artist_ids = [tracks[i + offset]["artist_id"] for i in range(tracks_remainder)]
-        else:
-            artist_ids = [tracks[i + offset]["artist_id"] for i in range(50)]
-        artist_ids = ",".join(artist_ids)
-        artist_api_endpoint = f"{api_url}/artists?ids={artist_ids}"
-        artist_response = requests.get(artist_api_endpoint, headers=auth_header)
-        artist_data = json.loads(artist_response.text)
-        artists = artist_data["artists"]
-        for i in range(len(artists)):
-            tracks[i + offset]["genre"] = get_main_genre(artists[i]["genres"])
-            tracks[i + offset]["decade"] = get_decade(tracks[i + offset])
-
-        # Get audio features for all tracks
-        get_audio_features(tracks, api_url, auth_header)
     playlist_ids = sort_by_genre(tracks, api_url, auth_header)
     return render_template("playlists.html", playlist_type="genre", ids=playlist_ids)
 
@@ -77,32 +88,10 @@ def decade():
     # Sort songs into decade playlists
     auth_header = session["header"]
     # Get user tracks data
-    tracks = get_saved_tracks(api_url, auth_header)
-
-    # Check user has more than 0 and less than 4000 tracks
-    if tracks is None:
-        return render_template("error.html", type="no_tracks")
-    elif len(tracks) > 4000:
-        return render_template("error.html", type="too_many_tracks")
-
-    # Get genre and release decade for each track
-    tracks_remainder = len(tracks) % 50
-    for offset in range(0, len(tracks), 50):
-        if len(tracks) < offset + 50:
-            artist_ids = [tracks[i + offset]["artist_id"] for i in range(tracks_remainder)]
-        else:
-            artist_ids = [tracks[i + offset]["artist_id"] for i in range(50)]
-        artist_ids = ",".join(artist_ids)
-        artist_api_endpoint = f"{api_url}/artists?ids={artist_ids}"
-        artist_response = requests.get(artist_api_endpoint, headers=auth_header)
-        artist_data = json.loads(artist_response.text)
-        artists = artist_data["artists"]
-        for i in range(len(artists)):
-            tracks[i + offset]["genre"] = get_main_genre(artists[i]["genres"])
-            tracks[i + offset]["decade"] = get_decade(tracks[i + offset])
-
-        # Get audio features for all tracks
-        get_audio_features(tracks, api_url, auth_header)
+    tracks = collect_data(auth_header)
+    # Displays error page if the user has no tracks or over 4000 tracks
+    if tracks == "no_tracks" or tracks == "too_many_tracks":
+        return render_template("error.html", type=tracks)
     playlist_ids = sort_by_decade(tracks, api_url, auth_header)
     return render_template("playlists.html", playlist_type="decade", ids=playlist_ids)
 
@@ -119,32 +108,10 @@ def custom():
         custom_data = session["custom_data"]
         auth_header = session["header"]
         # Get user tracks data
-        tracks = get_saved_tracks(api_url, auth_header)
-
-        # Check user has more than 0 and less than 4000 tracks
-        if tracks is None:
-            return render_template("error.html", type="no_tracks")
-        elif len(tracks) > 4000:
-            return render_template("error.html", type="too_many_tracks")
-
-        # Get genre and release decade for each track
-        tracks_remainder = len(tracks) % 50
-        for offset in range(0, len(tracks), 50):
-            if len(tracks) < offset + 50:
-                artist_ids = [tracks[i + offset]["artist_id"] for i in range(tracks_remainder)]
-            else:
-                artist_ids = [tracks[i + offset]["artist_id"] for i in range(50)]
-            artist_ids = ",".join(artist_ids)
-            artist_api_endpoint = f"{api_url}/artists?ids={artist_ids}"
-            artist_response = requests.get(artist_api_endpoint, headers=auth_header)
-            artist_data = json.loads(artist_response.text)
-            artists = artist_data["artists"]
-            for i in range(len(artists)):
-                tracks[i + offset]["genre"] = get_main_genre(artists[i]["genres"])
-                tracks[i + offset]["decade"] = get_decade(tracks[i + offset])
-
-            # Get audio features for all tracks
-            get_audio_features(tracks, api_url, auth_header)
+        tracks = collect_data(auth_header)
+        # Displays error page if the user has no tracks or over 4000 tracks
+        if tracks == "no_tracks" or tracks == "too_many_tracks":
+            return render_template("error.html", type=tracks)
         playlist_id = sort_by_audio_features(tracks, custom_data, api_url, auth_header)
     return render_template("playlists.html", playlist_type="custom", id=playlist_id)
 
