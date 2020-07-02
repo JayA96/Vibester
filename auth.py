@@ -5,6 +5,8 @@ import requests
 from flask import request
 from urllib.parse import quote
 
+# Auth functions mainly taken from https://github.com/drshrey/spotify-flask-auth-example
+
 # Client keys
 client_id = os.environ.get('SPOTIFY_CLIENT_ID')
 client_secret = os.environ.get('SPOTIFY_CLIENT_SECRET')

@@ -23,7 +23,7 @@ def get_saved_tracks(api_url, auth_header):
         user_tracks_api_endpoint = f"{api_url}/me/tracks?limit=50&offset={offset}"
         user_tracks_response = requests.get(user_tracks_api_endpoint, headers=auth_header)
         user_tracks_data = json.loads(user_tracks_response.text)
-        print(user_tracks_data) # error can find "items" key
+        print(user_tracks_data)  # error can find "items" key
         # Get the list of items from JSON
         tracks_items = user_tracks_data["items"]
 
@@ -376,7 +376,7 @@ def get_audio_features(tracks, api_url, auth_header):
     # Get the audio analysis features for each track
 
     total_tracks = len(tracks)
-    print(tracks) #error says "track_id" is None
+    print(tracks)  # error says "track_id" is None
 
     # Store the track ids for every track in a list
     track_ids = [tracks[i]["track_id"] for i in range(total_tracks)]
