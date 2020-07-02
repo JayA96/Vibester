@@ -44,6 +44,12 @@ def genre():
     # Get user tracks data
     tracks = get_saved_tracks(api_url, auth_header)
 
+    # Check user has more than 0 and less than 4000 tracks
+    if tracks is None:
+        return render_template("error.html", type="no_tracks")
+    elif len(tracks) > 4000:
+        return render_template("error.html", type="too_many_tracks")
+
     # Get genre and release decade for each track
     tracks_remainder = len(tracks) % 50
     for offset in range(0, len(tracks), 50):

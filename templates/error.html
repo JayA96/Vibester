@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}Unsuccessful{% endblock %}
+
+{% block body %}
+<header>
+    <div class="container_fluid p-0 text-center text-sm-left">
+        <a href="/home" class="navbar-brand mb-0 pl-10">
+            <img src="/static/cover.png" alt="Home">
+        </a>
+    </div>
+</header>
+<main>
+    <div class="homepage">
+        <div class="homepage-heading">
+            <h1>We're Sorry</h1>
+            {% if type == "no_tracks" %}
+            <h3>We couldn't generate your playlists. It looks like you don't have any saved tracks in your Spotify
+                library. Try liking some of your favourite tracks then try again.
+            </h3>
+            {% elif type == "too_many_tracks" %}
+            <h3>We couldn't generate your playlists. It looks like you have too many saved tracks. The max number of
+                tracks Vibester can process is 4000.
+            </h3>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}

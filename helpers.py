@@ -11,6 +11,10 @@ def get_saved_tracks(api_url, auth_header):
     user_tracks_data = json.loads(user_tracks_response.text)
     total_tracks = user_tracks_data["total"]
 
+    # Exit function if user has no tracks
+    if total_tracks == 0:
+        return None
+
     # Initialise list of tracks
     tracks = [None] * total_tracks
 
