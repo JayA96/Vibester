@@ -17,7 +17,7 @@ def collect_data(auth_header):
     tracks = get_saved_tracks(api_url, auth_header)
 
     # Check user has more than 0 and less than 4000 tracks
-    if len(tracks) == 0:
+    if tracks == 0:
         return "no_tracks"
     elif len(tracks) > 4000:
         return "too_many_tracks"
